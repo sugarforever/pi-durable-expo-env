@@ -9,7 +9,10 @@
     "dist",
     "README.md",
     "LICENSE",
-    "CHANGELOG.md"
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "docs/validation.md",
+    "docs/releasing.md"
   ],
   "exports": {
     ".": {
@@ -28,7 +31,8 @@
     "check:portable": "node scripts/check-portable.mjs",
     "check": "npm run typecheck && npm test && npm run build && npm run check:portable",
     "prepack": "npm run build",
-    "example:prepare": "npm pack --pack-destination examples/expo"
+    "example:prepare": "npm pack --pack-destination examples/expo",
+    "prepublishOnly": "npm run check"
   },
   "peerDependencies": {
     "@earendil-works/pi-durable": "1.3.x",
@@ -56,8 +60,14 @@
     "filesystem",
     "agent",
     "ios",
-    "android"
+    "android",
+    "execution-environment",
+    "durable-agents"
   ],
   "main": "./dist/index.js",
-  "types": "./dist/index.d.ts"
+  "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
 }

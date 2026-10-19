@@ -2,24 +2,50 @@
 
 An Expo-based mobile execution environment for **Pi Durable 1.3** on Android and iOS, targeting **Expo SDK 58**. The first release provides an app-private filesystem. Reuse Pi's `read`, `write` and `edit` tools through its `ExecutionEnv` interface. The adapter has no Node.js runtime dependency and does not execute shell commands.
 
-This project is independent of Moose and can be used by other Expo applications. Version 0.1.0 is a local, unpublished release; the package name is provisional until registry availability is checked.
+An independent community adapter for Pi Durable and Expo. This is not an official package from either project. It can be used by any compatible Expo app; it does not depend on Moose.
+
+Pi Durable manages durable agents and tasks. This package supplies device capabilities through `ExecutionEnv`; it does not provide model authentication, session storage, background scheduling, a terminal or a complete mobile agent application.
 
 ## Install
 
-Until published, build and install a local tarball:
+Install into an existing **Expo SDK 58** application:
 
 ```sh
-npm ci
-npm run check
-npm pack
-# In your Expo SDK 58 application:
 npx expo install expo-file-system
-npm install /path/to/pi-durable-expo-env-0.1.0.tgz @earendil-works/pi-durable@1.3.0
+npm install pi-durable-expo-env@0.1.0 @earendil-works/pi-durable@1.3.0 @earendil-works/chord@1.3.0
 ```
+
+The npm command is for the published release. To try a source checkout before publication, run `npm ci && npm run check && npm pack` in this repository, then replace `pi-durable-expo-env@0.1.0` in that command with the generated tarball's path.
+
+| Dependency                       | Supported contract   | Tested version       |
+| -------------------------------- | -------------------- | -------------------- |
+| Pi Durable                       | `1.3.x`              | `1.3.0`              |
+| Expo / expo-file-system          | SDK `58` / `58.x`    | `58.0.15` / `58.0.9` |
+| React Native / JavaScript engine | Expo SDK 58 / Hermes | `0.88.0` / Hermes    |
+
+ES modules and TypeScript declarations are included. CommonJS `require()` is not an exported entry point.
 
 Node.js 22.19+ is needed for development tooling, not on the mobile device. This release targets Android/iOS; web and older Expo/Pi versions are not supported. Rebuild your development client after adding native dependencies.
 
-The iOS example compiles Expo modules from source using `expo-build-properties` (`ios.usePrecompiledModules: false`), because the tested SDK 58 precompiled ExpoFileSystem/ExpoModulesCore pair failed at launch. See [validation](docs/validation.md) for the exact result and workaround.
+The tested iOS SDK 58 precompiled ExpoFileSystem/ExpoModulesCore pair failed at native launch with a missing symbol. The example uses this workaround:
+
+```sh
+npx expo install expo-build-properties
+```
+
+Merge into the app's Expo config, then regenerate and rebuild the native client:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      ["expo-build-properties", { "ios": { "usePrecompiledModules": false } }]
+    ]
+  }
+}
+```
+
+This compiles Expo modules from matching source. It changes native build configuration, so restarting Metro alone is insufficient. See [validation](docs/validation.md) for the original failure and tested configuration.
 
 ## Use
 
@@ -41,6 +67,36 @@ await env.cleanup(BACKGROUND_CONTEXT);
 ```
 
 The factory creates `Paths.document/pi-workspaces/<workspaceId>`. IDs contain 1–64 ASCII letters, digits, hyphens or underscores. The model sees only `/workspace` paths. Relative paths use `env.cwd`, initially `/workspace`; absolute paths must remain within that root. `..` cannot cross the root. URI paths, backslashes and NUL are rejected. Unicode and literal percent characters are supported.
+
+### Workspace options
+
+`createExpoWorkspace(options)` synchronously creates or reopens a private directory and returns Pi's `ExecutionEnv`.
+
+| Option                | Type      | Default            | Purpose                                                      |
+| --------------------- | --------- | ------------------ | ------------------------------------------------------------ |
+| `workspaceId`         | `string`  | Required           | Stable identifier for the private workspace                  |
+| `maxFileBytes`        | `number`  | `8 * 1024 * 1024`  | Maximum file size accepted by reads and writes               |
+| `maxOpenReaderBytes`  | `number`  | `32 * 1024 * 1024` | Retained binary snapshot budget per environment              |
+| `maxDirectoryEntries` | `number`  | `10_000`           | Maximum entries in one directory listing                     |
+| `readOnly`            | `boolean` | `false`            | Reject file mutations after creating/reopening the workspace |
+
+Numeric limits must be positive safe integers below 2 GiB. Read-only mode still initializes the workspace directory; it is a file-operation policy, not an OS permission boundary.
+
+```ts
+const env = createExpoWorkspace({
+  workspaceId: "conversation-42",
+  maxFileBytes: 2 * 1024 * 1024,
+  readOnly: true,
+});
+```
+
+The root entry also exports `WORKSPACE_ROOT` (`"/workspace"`) and the `ExpoWorkspaceOptions`, `WorkspaceOptions` and `WorkspaceBackend` types. The `/core` entry exports `createWorkspaceEnv` for trusted custom backends without loading Expo native modules.
+
+### Results and lifecycle
+
+Filesystem operations take a Chord context as their final argument and return Pi's `Result<T, FileError>`. Use `getOrThrow()` for exception-based handling or inspect `result.ok` and `result.error.code`. Invalid workspace IDs and limits fail during factory construction; native directory creation can also throw.
+
+Keep an environment alive while its readers or tool calls are in use. Close readers when finished, then call `cleanup(context)` when the owning session or operation finishes. Cleanup invalidates the environment and releases reader resources; it preserves files. Reopen with the same `workspaceId` to access them again.
 
 ### Pi tool integration
 
@@ -127,4 +183,15 @@ npm run ios     # Xcode/macOS
 
 The independent example runs synthetic native filesystem checks automatically and has a rerun button. No model key, account or network call is required. It installs the root package tarball generated by `example:prepare`, exercising the same entry points as a consumer. See [validation](docs/validation.md) for tested platforms and remaining limits, and [contributing](CONTRIBUTING.md) for the workflow.
 
-MIT licensed.
+## Verification status
+
+- Thirty automated tests cover the adapter, genuine Pi text tools and eight selected upstream reader conformance cases. The complete Pi environment conformance suite is not claimed.
+- Pi read/write/edit and eight native checks passed on an iOS 26.2 simulator with Hermes. Physical iOS devices were not tested.
+- Android Hermes resource export passed; Android native compilation and emulator/device execution have not been tested.
+- Renaming the example changed its native identifiers; native binaries were not rebuilt for that metadata-only change. See the included [validation record](docs/validation.md) for evidence and dependency audit findings.
+
+## Contributing and releasing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and [docs/releasing.md](docs/releasing.md) for package inspection and manual npm release steps. These documents are included in the npm tarball. When browsing the installed package locally, their paths are relative to `node_modules/pi-durable-expo-env/`.
+
+MIT licensed. Pi Durable and Expo retain their respective licenses and ownership.
