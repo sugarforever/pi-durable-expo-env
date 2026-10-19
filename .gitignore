@@ -1,0 +1,9 @@
+node_modules/
+dist/
+coverage/
+.expo/
+ios/
+android/
+*.tgz
+.env*
+.DS_Store

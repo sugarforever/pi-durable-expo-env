@@ -1,0 +1,25 @@
+{
+  "expo": {
+    "name": "Pi Filesystem",
+    "slug": "pi-expo-filesystem-example",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "ios": {
+      "bundleIdentifier": "dev.verysmallwoods.piexpofilesystemexample",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "dev.verysmallwoods.piexpofilesystemexample"
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "ios": {
+            "usePrecompiledModules": false
+          }
+        }
+      ]
+    ]
+  }
+}
