@@ -1,0 +1,36 @@
+name: Release
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - uses: changesets/action@v2
+        with:
+          version-script: npm run version:packages
+          publish-script: ${{ vars.NPM_PUBLISH_ENABLED == 'true' && 'npm run release' || '' }}
+          pr-title: "chore: release package"
+          commit-message: "chore: release package"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -9,11 +9,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "22"
+          node-version: "24"
           cache: npm
       - run: npm ci
       - run: npm run check
       - run: npm run example:prepare
+      - run: npm install --package-lock-only --ignore-scripts ./pi-durable-expo-env-$(node -p "require('../../package.json').version").tgz
+        working-directory: examples/expo
       - run: npm ci
         working-directory: examples/expo
       - run: npx expo export --platform all

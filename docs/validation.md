@@ -28,7 +28,9 @@ After updating the directly used esbuild development dependency to 0.28.2 and tr
 
 ## Release state
 
-Local version 0.1.0 only. No npm publication, Git remote or remote push. Repository metadata and a public release workflow await the owner's repository URL and release instruction.
+Version 0.1.0 is prepared for the owner-provided GitHub repository `sugarforever/pi-durable-expo-env`. SemVer / Changesets 3 and GitHub Actions 2 manage version PRs and releases. npm publishing stays disabled until the initial owner publication and trusted-publisher setup described in releasing.md. No npm publication was performed during setup.
+
+On 2026-10-19, release automation checks passed: 30 tests, type checking, build, portable entry validation, tarball inspection, example tarball installation and both Android/iOS Hermes resource exports. No new native device verification. Changesets 3 avoids the extra advisories introduced by Changesets 2; the root audit remains 22 findings (15 high, 7 moderate), and `npm audit --omit=dev` reports zero.
 
 ## Package rename
 

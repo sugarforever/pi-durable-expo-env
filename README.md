@@ -192,6 +192,6 @@ The independent example runs synthetic native filesystem checks automatically an
 
 ## Contributing and releasing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development and [docs/releasing.md](docs/releasing.md) for package inspection and manual npm release steps. These documents are included in the npm tarball. When browsing the installed package locally, their paths are relative to `node_modules/pi-durable-expo-env/`.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development and [docs/releasing.md](docs/releasing.md) for SemVer, Changesets, and automated npm releases. These documents are included in the npm tarball. When browsing the installed package locally, their paths are relative to `node_modules/pi-durable-expo-env/`.
 
 MIT licensed. Pi Durable and Expo retain their respective licenses and ownership.
