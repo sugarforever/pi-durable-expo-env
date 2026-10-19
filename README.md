@@ -1,6 +1,6 @@
-# pi-expo-filesystem
+# pi-durable-expo-env
 
-App-private filesystem support for **Pi Durable 1.3** on **Expo SDK 58**, Android and iOS. Reuse Pi's `read`, `write` and `edit` tools through its `ExecutionEnv` interface. The adapter has no Node.js runtime dependency and does not execute shell commands.
+An Expo-based mobile execution environment for **Pi Durable 1.3** on Android and iOS, targeting **Expo SDK 58**. The first release provides an app-private filesystem. Reuse Pi's `read`, `write` and `edit` tools through its `ExecutionEnv` interface. The adapter has no Node.js runtime dependency and does not execute shell commands.
 
 This project is independent of Moose and can be used by other Expo applications. Version 0.1.0 is a local, unpublished release; the package name is provisional until registry availability is checked.
 
@@ -14,7 +14,7 @@ npm run check
 npm pack
 # In your Expo SDK 58 application:
 npx expo install expo-file-system
-npm install /path/to/pi-expo-filesystem-0.1.0.tgz @earendil-works/pi-durable@1.3.0
+npm install /path/to/pi-durable-expo-env-0.1.0.tgz @earendil-works/pi-durable@1.3.0
 ```
 
 Node.js 22.19+ is needed for development tooling, not on the mobile device. This release targets Android/iOS; web and older Expo/Pi versions are not supported. Rebuild your development client after adding native dependencies.
@@ -24,7 +24,7 @@ The iOS example compiles Expo modules from source using `expo-build-properties` 
 ## Use
 
 ```ts
-import { createExpoWorkspace } from "pi-expo-filesystem";
+import { createExpoWorkspace } from "pi-durable-expo-env";
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import { getOrThrow } from "@earendil-works/pi-durable/env";
 
@@ -57,7 +57,7 @@ import {
   createWriteTool,
   createEditTool,
 } from "@earendil-works/pi-durable/tools";
-import { createExpoWorkspace } from "pi-expo-filesystem";
+import { createExpoWorkspace } from "pi-durable-expo-env";
 
 const registry = createRegistry();
 registry.install(
@@ -109,7 +109,7 @@ Mutations sharing one physical root are serialized within the same JavaScript re
 
 ## Trust boundary
 
-Use the factory's dedicated app-private workspace. Expo does not expose the lstat/realpath controls needed to prove symlink-safe containment. The adapter is **not a sandbox against hostile native code or external writers** creating symlinks in that directory. The portable `pi-expo-filesystem/core` entry accepts a trusted backend and root URI for custom hosts and testing; the host must maintain those assumptions.
+Use the factory's dedicated app-private workspace. Expo does not expose the lstat/realpath controls needed to prove symlink-safe containment. The adapter is **not a sandbox against hostile native code or external writers** creating symlinks in that directory. The portable `pi-durable-expo-env/core` entry accepts a trusted backend and root URI for custom hosts and testing; the host must maintain those assumptions.
 
 The package requests no permissions and exposes no arbitrary-root picker. To import a user document, let the app invoke the system document picker and copy selected bytes into the workspace, respecting size limits. Android `content://`, iOS security-scoped bookmarks, shared folders, search services and Skill script execution need separate host integrations. Model-visible files may be sent to the configured model provider; the app should make that behavior clear to users.
 

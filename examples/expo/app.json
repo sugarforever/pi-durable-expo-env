@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "Pi Filesystem",
-    "slug": "pi-expo-filesystem-example",
+    "name": "Pi Durable Expo Env",
+    "slug": "pi-durable-expo-env-example",
     "version": "0.1.0",
     "orientation": "portrait",
     "ios": {
-      "bundleIdentifier": "dev.verysmallwoods.piexpofilesystemexample",
+      "bundleIdentifier": "dev.verysmallwoods.pidurableexpoenvexample",
       "supportsTablet": true
     },
     "android": {
-      "package": "dev.verysmallwoods.piexpofilesystemexample"
+      "package": "dev.verysmallwoods.pidurableexpoenvexample"
     },
     "plugins": [
       [

@@ -29,3 +29,7 @@ After updating the directly used esbuild development dependency to 0.28.2 and tr
 ## Release state
 
 Local version 0.1.0 only. No npm publication, Git remote or remote push. Repository metadata and a public release workflow await the owner's repository URL and release instruction.
+
+## Package rename
+
+Renamed the project directory and npm package to `pi-durable-expo-env`. Updated the example's import, package dependency, tarball, app name and native identifiers. After the rename, all 30 tests, type checking, portable bundle evaluation, tarball installation, example type checking and both Hermes exports passed. Native binaries were not rebuilt for this naming-only change; the native runtime evidence above belongs to the original example identifiers.

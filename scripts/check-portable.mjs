@@ -6,7 +6,7 @@ const result = await build({
   bundle: true,
   write: false,
   format: "iife",
-  globalName: "PiExpoFilesystem",
+  globalName: "PiDurableExpoEnv",
   platform: "browser",
   target: "es2022",
   external: ["expo-file-system"],

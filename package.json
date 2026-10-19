@@ -1,7 +1,7 @@
 {
-  "name": "pi-expo-filesystem",
+  "name": "pi-durable-expo-env",
   "version": "0.1.0",
-  "description": "Expo workspace filesystem adapter for Pi Durable without Node.js or shell execution",
+  "description": "Expo-based mobile execution environment for Pi Durable on Android and iOS",
   "license": "MIT",
   "type": "module",
   "sideEffects": false,

@@ -6,7 +6,7 @@ import {
   ScrollView,
   StyleSheet,
 } from "react-native";
-import { createExpoWorkspace } from "pi-expo-filesystem";
+import { createExpoWorkspace } from "pi-durable-expo-env";
 import { BACKGROUND_CONTEXT as context } from "@earendil-works/chord/context";
 import {
   createReadTool,
@@ -140,7 +140,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.screen}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Pi Filesystem</Text>
+        <Text style={styles.title}>Pi Durable Expo Env</Text>
         <Text selectable style={styles.result}>
           {status}
         </Text>
